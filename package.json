@@ -1,0 +1,22 @@
+{
+  "name": "challenge5",
+  "version": "1.0.0",
+  "description": "tugas kelima digitalent",
+  "main": "index.js",
+  "scripts": {
+    "test": "tes"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Mamanggans/Bismillah_challenge_5.git"
+  },
+  "keywords": [
+    "tugas5"
+  ],
+  "author": "ferdiansyah",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Mamanggans/Bismillah_challenge_5/issues"
+  },
+  "homepage": "https://github.com/Mamanggans/Bismillah_challenge_5#readme"
+}
