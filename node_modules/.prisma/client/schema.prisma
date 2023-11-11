@@ -12,15 +12,35 @@ datasource db {
 
 model User {
   id   Int   @id @default(autoincrement())
-  name String 
-  post Post[]
+  name String
+  email String
+  password String 
+  bank_account bank_account[]
+  Profile  Profile[]
+  
 }
 
-model Post {
+model Profile {
+  id   Int   @id @default(autoincrement())
+  user_id Int
+  identity_type String
+  identity_number String
+  addres String
+  user    User   @relation(fields: [user_id], references: [id])
+}
+
+model bank_account {
   id        Int    @id @default(autoincrement())
   title     String
-  author_id Int
-  author    User   @relation(fields: [author_id], references: [id])
+  user_id Int
+  user    User   @relation(fields: [user_id], references: [id])
+}
+
+model transaction {
+  id         Int       @id @default(autoincrement())
+  source_account_id Int
+  destination_account_id Int
+  amount Int 
 }
 
 
