@@ -17,7 +17,10 @@ model User {
   password String 
   bank_account bank_account[]
   Profile  Profile[]
-  
+  // transaction transaction[]
+  user_source transaction[] @relation("user_source")
+  user_destination transaction[] @relation("user_destination")
+
 }
 
 model Profile {
@@ -41,6 +44,8 @@ model transaction {
   source_account_id Int
   destination_account_id Int
   amount Int 
+  user_source    User   @relation("user_source", fields: [source_account_id], references: [id])
+  user_destination User   @relation("user_destination", fields: [destination_account_id], references: [id])
 }
 
 
