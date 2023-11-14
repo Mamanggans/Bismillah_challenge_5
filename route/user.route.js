@@ -6,6 +6,6 @@ const {checkPostReq} = require('../middleware/middleware')
 
 route.get('/', User)
 
-route.post('/', checkPostReq, UserPost)
+// route.post('/', checkPostReq, UserPost)
 
 module.exports = route
