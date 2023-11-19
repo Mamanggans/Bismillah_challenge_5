@@ -1,11 +1,10 @@
 const express = require('express')
 const route = express.Router()
-const {User, UserPost} = require('../controller/user.controller')
-const {checkPostReq} = require('../middleware/middleware')
+const { UserPost } = require('../controller/user.controller')
+const { CheckPost } = require('../middleware/middleware')
 
 
-route.get('/', User)
-
-// route.post('/', checkPostReq, UserPost)
+// route.get('/', User)
+route.post('/', CheckPost, UserPost)
 
 module.exports = route

@@ -16,19 +16,19 @@ model User {
   email String
   password String 
   bank_account bank_account[]
-  Profile  Profile[]
+  Profile  Profile?
   // transaction transaction[]
-  user_source transaction[] @relation("user_source")
-  user_destination transaction[] @relation("user_destination")
+  // user_source transaction[] @relation("user_source")
+  // user_destination transaction[] @relation("user_destination")
 
 }
 
 model Profile {
   id   Int   @id @default(autoincrement())
-  user_id Int
+  user_id Int @unique
   identity_type String
   identity_number String
-  addres String
+  address String
   user    User   @relation(fields: [user_id], references: [id])
 }
 
@@ -37,6 +37,8 @@ model bank_account {
   title     String
   user_id Int
   user    User   @relation(fields: [user_id], references: [id])
+  transactionsAsSender transaction[] @relation("SenderTransactions")
+  transactionsAsReceiver transaction[] @relation("ReceiverTransactions")
 }
 
 model transaction {
@@ -44,8 +46,8 @@ model transaction {
   source_account_id Int
   destination_account_id Int
   amount Int 
-  user_source    User   @relation("user_source", fields: [source_account_id], references: [id])
-  user_destination User   @relation("user_destination", fields: [destination_account_id], references: [id])
+  SenderTransactions      bank_account   @relation("SenderTransactions", fields: [source_account_id], references: [id])
+  ReceiverTransactions    bank_account   @relation("ReceiverTransactions", fields: [destination_account_id], references: [id])
 }
 
 

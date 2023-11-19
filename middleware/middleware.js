@@ -3,21 +3,24 @@ const { ResponseTemplate } = require('../helper/template.helper')
 const Joi = require('joi');
 // function PrintSuccess(req, res, next) {
 //     const { } = req.params.id
-//     console.log(` SELALU BERHASIL AKSES`)
+//     console.log(`nyoba akses`)
 //     next()
 // }
 
 // function PrintSuccessRoute(req, res, next) {
 
-//     console.log(` SELALU BERHASIL AKSES LEWAT ROUTE LEVEL`)
+//     console.log(` berhasil lewat reoute `)
 //     next()
 // }
 
-function CheckPostReq(req, res, next) {
+function CheckPost(req, res, next) {
     const schema = Joi.object({
         name: Joi.string().alphanum().max(255).required(),
-        address: Joi.string().alphanum().required(),
-        email: Joi.string().alphanum().email().required()
+        email: Joi.string().email().required(),
+        password: Joi.string().alphanum().required(),
+        identity_type: Joi.string().required(),
+        identity_number: Joi.string().required(),
+        address: Joi.string().required()
     })
 
     const { error } = schema.validate(req.body)
@@ -36,5 +39,5 @@ function CheckPostReq(req, res, next) {
 
 
 module.exports = {
-    CheckPostReq
+    CheckPost
 }

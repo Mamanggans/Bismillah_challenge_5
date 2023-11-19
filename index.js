@@ -1,4 +1,4 @@
-const router = require('./route/routes')
+const route = require('./route/routes')
 const express = require('express')
 const app = express()
 
@@ -8,7 +8,7 @@ const port = process.env.PORT || 3000
 
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
-app.use('/', router)
+app.use('/', route)
 
 app.listen(port, () => {
     console.log(`Example app listening on port ${port}`)
