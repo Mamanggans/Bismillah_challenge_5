@@ -89,16 +89,8 @@ async function GetAllAccount(req, res) {
           name: true,
           email: true,
           password: true,
-          // identity_type: true,
-          // identity_number: true,
-          // address: true,
         },
         where: payload,
-        // orderBy: {
-        //     id: 'asc'
-        // },
-        // skip: (currentPage - 1) * itemsPerPage,
-        // take: itemsPerPage,
         });
         let resp = ResponseTemplate(user, "success", null, 200);
         res.json(resp);
