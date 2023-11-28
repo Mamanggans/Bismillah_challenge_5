@@ -278,6 +278,52 @@ async function getBankAccounts(req, res) {
   }
 }
 
+async function accountpost(req, res) {
+  try {
+    // Ambil data dari req.body
+    // user_id Int
+    // bank_name String
+    // Bank_account_money String
+    // balance           Int
+    const { user_id, bank_name, Bank_account_money, balance } = req.body;
+
+    // Persiapkan payload untuk operasi create
+    const payload = {
+      user_id: parseInt(user_id),
+      bank_name,
+      Bank_account_money,
+      balance,
+    };
+
+    // Lakukan operasi create menggunakan Prisma
+    const createdAccount = await prisma.bank_account.create({
+      data: payload,
+    });
+
+    // Buat respons sukses
+    const response = {
+      success: true,
+      message: "Account created successfully.",
+      data: createdAccount,
+    };
+
+    // Kirim respons JSON ke client
+    res.status(200).json(response);
+  } catch (error) {
+    // Tangani kesalahan dengan baik
+    console.error("Error creating account:", error);
+    
+    // Buat respons kesalahan
+    const response = {
+      success: false,
+      message: "Internal server error.",
+      error: error.message || "An error occurred while processing your request.",
+    };
+
+    // Kirim respons JSON ke client
+    res.status(500).json(response);
+  }
+}
 
 
 //----------------------------------------------------------------------------------------------------------------//
@@ -287,7 +333,8 @@ module.exports = {
     retrieveUserbyId,
     updateUserById,
     deleteUser,
-    getBankAccounts
+    getBankAccounts,
+    accountpost
 }
 
 

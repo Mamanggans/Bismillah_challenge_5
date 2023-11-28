@@ -33,29 +33,41 @@ function CheckPost(req, res, next) {
 
     next()
 }
+
+
 function CheckPostAccount(req, res, next) {
+    // Definisikan skema validasi menggunakan Joi
+    // user_id Int
+    // bank_name String
+    // Bank_account_money String
+    // balance           Int
     const schema = Joi.object({
-      bank_name: Joi.string().alphanum().max(255).required(),
-      userId: Joi.number().required(),
-      bank_account_number: Joi.number().required(),
+    bank_name: Joi.string().alphanum().max(255).required(),
+      user_id: Joi.number().required(),
+      Bank_account_money: Joi.number().required(),
       balance: Joi.number().required(),
     });
   
+    // Lakukan validasi terhadap req.body menggunakan skema
     const { error } = schema.validate(req.body);
-    console.log(error);
-    if (error) {
-      let respErr = ResponseTemplate(
-        null,
-        "invalid request",
-        error.details[0].message,
-        400,
-      );
-      res.json(respErr);
-      return;
-    }
   
-    next();
+    // Jika terjadi kesalahan validasi, kirim respons error
+    if (error) {
+      const errorMessage = error.details[0].message;
+      const response = {
+        success: false,
+        message: "Invalid request",
+        error: errorMessage,
+        statusCode: 400,
+      };
+  
+      res.status(400).json(response);
+    } else {
+      // Jika validasi berhasil, lanjutkan ke middleware berikutnya
+      next();
+    }
   }
+  
 
 
 module.exports = {
