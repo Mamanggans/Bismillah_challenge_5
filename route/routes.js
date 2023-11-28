@@ -1,6 +1,7 @@
 const express = require('express')
 const route = express.Router()
 const userRoute = require('./user.route')
+const accountRoute = require("./akun.routes");
 const morgan = require('morgan')
 
 route.use(morgan('dev'))
@@ -21,6 +22,7 @@ route.use(morgan('dev'))
 
 // router.use('/user', userRoute)
 route.use("/api/v1/users", userRoute);
+route.use("/api/v1/accounts", accountRoute);
 
 
 

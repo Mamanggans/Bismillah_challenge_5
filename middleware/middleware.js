@@ -33,12 +33,32 @@ function CheckPost(req, res, next) {
 
     next()
 }
-
-
-
-
+function CheckPostAccount(req, res, next) {
+    const schema = Joi.object({
+      bank_name: Joi.string().alphanum().max(255).required(),
+      userId: Joi.number().required(),
+      bank_account_number: Joi.number().required(),
+      balance: Joi.number().required(),
+    });
+  
+    const { error } = schema.validate(req.body);
+    console.log(error);
+    if (error) {
+      let respErr = ResponseTemplate(
+        null,
+        "invalid request",
+        error.details[0].message,
+        400,
+      );
+      res.json(respErr);
+      return;
+    }
+  
+    next();
+  }
 
 
 module.exports = {
-    CheckPost
+    CheckPost,
+    CheckPostAccount
 }

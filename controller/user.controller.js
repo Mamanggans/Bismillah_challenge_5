@@ -105,7 +105,6 @@ async function GetAllAccount(req, res) {
     
 async function retrieveUserbyId(req, res) {
   const { user_id } = req.params;
-
   try {
     const userData = await prisma.User.findUnique({
       where: {
@@ -128,10 +127,9 @@ async function retrieveUserbyId(req, res) {
     console.log(error);
     let response;
     if (error instanceof Prisma.PrismaClientKnownRequestError) {
-      // Handle known Prisma errors
+
       response = ResponseTemplate(null, "Database error", error.message, 500);
     } else {
-      // Handle unknown errors
       response = ResponseTemplate(null, "internal server error", error, 500);
     }
     res.json(response);
@@ -139,9 +137,158 @@ async function retrieveUserbyId(req, res) {
   }
 }
 
+async function updateUserById(req, res) {
+  try {
+    const { name, email, password } = req.body;
+    const { user_id } = req.params;
 
+    const payload = {};
+
+    if (!name && !email && !password) {
+      return res.status(400).json({
+        success: false,
+        message: "Bad request. Please provide at least one field to update.",
+      });
+    }
+
+    if (name) {
+      payload.name = name;
+    }
+
+    if (email) {
+      payload.email = email;
+    }
+
+    if (password) {
+      payload.password = password;
+    }
+    
+    const updatedUser = await prisma.User.update({
+      where: {
+        id: Number(user_id),
+      },
+      data: payload,
+    });
+
+    return res.status(200).json({
+      success: true,
+      message: "User information updated successfully.",
+      data: updatedUser,
+    });
+  } catch (error) {
+    console.error("Error updating user information:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error.",
+      error: error.message || "An error occurred while processing your request.",
+    });
+  }
+}
+
+async function deleteUser(req, res) {
+  try {
+    const { user_id } = req.params;
+
+    const deletedUser = await prisma.users.delete({
+      where: {
+        id: Number(user_id),
+      },
+    });
+
+    if (!deletedUser) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found.",
+      });
+    }
+
+    const response = {
+      success: true,
+      message: "User deleted successfully.",
+      data: deletedUser,
+    };
+
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error deleting user:", error);
+    const response = {
+      success: false,
+      message: "Internal server error.",
+      error: error.message || "An error occurred while processing your request.",
+    };
+
+    res.status(500).json(response);
+  }
+}
+//----------------------------------------------------------------------------------------------------------------//
+
+async function getBankAccounts(req, res) {
+  try {
+    // user_id Int
+    // bank_name String
+    // Bank_account_money String
+    const { user_id, bank_name, Bank_account_money, balance } = req.query;
+
+    const payload = {};
+
+    if (user_id) {
+      payload.user_id = user_id;
+    }
+
+    if (bank_name) {
+      payload.bank_name = bank_name;
+    }
+
+    if (Bank_account_money) {
+      payload.Bank_account_money = Bank_account_money;
+    }
+
+    const page = parseInt(req.query.page) || 1;
+    const perPage = parseInt(req.query.perPage) || 10;
+    const skip = (page - 1) * perPage;
+
+    const accounts = await prisma.bank_account.findMany({
+      skip,
+      take: perPage,
+      where: payload,
+      select: {
+        id: true,
+        user_id: true,
+        bank_name: true,
+        Bank_account_money: true,
+        balance: true,
+      },
+    });
+
+    const totalAccounts = await prisma.bank_account.count({ where: payload });
+    const totalPages = Math.ceil(totalAccounts / perPage);
+
+
+    let response = ResponseTemplate(accounts, "success", null, 200);
+    res.status(200).json(response);
+  } catch (error) {
+    console.error("Error fetching bank accounts:", error);
+    const response = {
+      success: false,
+      message: "Internal server error.",
+      error: error.message || "An error occurred while processing your request.",
+    };
+
+    res.status(500).json(response);
+  }
+}
+
+
+
+//----------------------------------------------------------------------------------------------------------------//
 module.exports = { 
     UserPost,
     GetAllAccount,
-    retrieveUserbyId
+    retrieveUserbyId,
+    updateUserById,
+    deleteUser,
+    getBankAccounts
 }
+
+
+
