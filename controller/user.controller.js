@@ -2,7 +2,7 @@
 
 // const {Prisma, PrismaClient} = require('@prisma/Client')
 const {ResponseTemplate} = require('../helper/template.helper')
-const {PrismaClient} = require('@prisma/client')
+const {PrismaClient, Prisma} = require('@prisma/client')
 const {HashPassword} = require('../helper/hash.pass')
 const prisma = new PrismaClient(); 
 
@@ -50,7 +50,7 @@ async function UserPost(req, res){
 }
 async function GetAllAccount(req, res) {
   // try {
-  //   const users = await prisma.user.findMany({
+  //   const User = await prisma.user.findMany({
   //     include: {
   //       Profile: true
   //     }
@@ -82,7 +82,7 @@ async function GetAllAccount(req, res) {
       // const currentPage = parseInt(page) || 1
       // const itemsPerPage = parseInt(perPage) || 10
 
-      // const totalRecords = await prisma.users.count();
+      // const totalRecords = await prisma.User.count();
       const user = await prisma.User.findMany({
         select: {
           id: true,
@@ -102,9 +102,46 @@ async function GetAllAccount(req, res) {
       }
     }
 
+    
+async function retrieveUserbyId(req, res) {
+  const { user_id } = req.params;
+
+  try {
+    const userData = await prisma.User.findUnique({
+      where: {
+        id: Number(user_id),
+      },
+      include: {
+        Profile: true,
+      },
+    });
+
+    if (!userData) {
+      let response = ResponseTemplate(null, "User not found", null, 404);
+      res.json(response);
+      return;
+    }
+    let response = ResponseTemplate(userData, "success", null, 200);
+    res.json(response);
+    return;
+  } catch (error) {
+    console.log(error);
+    let response;
+    if (error instanceof Prisma.PrismaClientKnownRequestError) {
+      // Handle known Prisma errors
+      response = ResponseTemplate(null, "Database error", error.message, 500);
+    } else {
+      // Handle unknown errors
+      response = ResponseTemplate(null, "internal server error", error, 500);
+    }
+    res.json(response);
+    return;
+  }
+}
 
 
 module.exports = { 
     UserPost,
-    GetAllAccount
+    GetAllAccount,
+    retrieveUserbyId
 }
